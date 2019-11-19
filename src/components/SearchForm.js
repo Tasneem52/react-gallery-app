@@ -1,5 +1,4 @@
 import React from 'react';
-//import {withRouter} from 'react-router-dom';
 
 class SearchForm extends React.Component {
   // The searchText state will get updated on the onSearchChange, when users type input
