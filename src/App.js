@@ -5,6 +5,7 @@ import Nav from './components/Nav';
 import PhotoContainer from './components/PhotoContainer';
 import SearchForm from './components/SearchForm';
 import NotFound from './components/NotFound';
+import Error from './components/Error';
 
 // Import dependencies
 import axios from 'axios';
@@ -66,7 +67,7 @@ class App extends React.Component {
             <Route path="/sunsets" component={NotFound} />
             <Route path="/waterfalls" />
             <Route path="/rainbows" />
-            <Route component={NotFound} />
+            <Route component={Error} />
           </Switch>
         </div>
       </BrowserRouter>

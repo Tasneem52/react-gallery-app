@@ -66,3 +66,10 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `yarn build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+
+Exceed Requirements Added
+- A loading indicator is added that displays each time the app fetches new data.
+- If no matches are found by the search, it displays a friendly message to tell the user there are no matches.
+- Includes a 404-like error route that displays a friendly 404 error page when a URL does not match an existing route.
