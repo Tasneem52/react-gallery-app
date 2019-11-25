@@ -4,7 +4,6 @@ import React from 'react';
 import Nav from './components/Nav';
 import PhotoContainer from './components/PhotoContainer';
 import SearchForm from './components/SearchForm';
-import NotFound from './components/NotFound';
 import Error from './components/Error';
 
 // Import dependencies
@@ -12,7 +11,8 @@ import axios from 'axios';
 import {
   BrowserRouter,
   Route,
-  Switch
+  Switch,
+  Redirect
 } from 'react-router-dom';
 import apiKey from './config';
 
@@ -32,41 +32,58 @@ class App extends React.Component {
     };
   }
 
-   componentDidMount () {
-     this.performSearch();
-   }
+  componentDidMount () {
+    const pathname = window.location.pathname;
+    if (pathname.includes('/search')) {
+      this.performSearch(pathname.slice(8));
+    } else {
+      this.performSearch();
+    }
+  }
 
-   // Fetching data with axios
-   // Default query is set to sunsets
-   performSearch = (query = 'sunsets') => {
-     // Template literal is used to embed the value of query into the url using interpolation
-     // Limiting the search results to 24
-     axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`)
-      .then(response => {
-        this.setState({
-          photos: response.data.photos.photo,
-          loading: false,
-          query: query
-        });
-      })
-      .catch(error => {
-        console.log('Error fetching and parsing data', error);
+  // Fetching data with axios
+  // Default query is set to sunsets
+  performSearch = (query = 'sunsets') => {
+    this.setState({ loading: true });
+    // Template literal is used to embed the value of query into the url using interpolation
+    // Limiting the search results to 24
+    axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`)
+    .then(response => {
+      this.setState({
+        photos: response.data.photos.photo,
+        loading: false,
+        query: query
       });
+    })
+    .catch(error => {
+      console.log('Error fetching and parsing data', error);
+    });
    }
 
   render() {
+    const { loading, photos, query } = this.state;
     return (
       <BrowserRouter>
         <div className="container">
           <SearchForm onSearch={this.performSearch} />
           <Nav onClick={this.performSearch} />
           <Switch>
-            <Route path="/" render={() => (this.state.loading)
+            <Route exact path="/" render={() => <Redirect to="/sunsets" />} />
+            <Route path="/sunsets" render={() => (loading)
               ? <h3>LOADING...</h3>
-              : <PhotoContainer photos={this.state.photos} query={this.state.query} />} />
-            <Route path="/sunsets" component={NotFound} />
-            <Route path="/waterfalls" />
-            <Route path="/rainbows" />
+              : <PhotoContainer photos={photos} query={query} />}
+            />
+            <Route path="/waterfalls" render={() => (loading)
+              ? <h3>LOADING...</h3>
+              : <PhotoContainer photos={photos} query={query} />}
+            />
+            <Route path="/rainbows" render={() => (loading)
+              ? <h3>LOADING...</h3>
+              : <PhotoContainer photos={photos} query={query} />}
+            />
+            <Route path="/search/:key" render={() =>
+              <PhotoContainer photos={photos} query={query} />}
+            />
             <Route component={Error} />
           </Switch>
         </div>

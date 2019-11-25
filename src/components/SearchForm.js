@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from "react-router-dom";
 
 class SearchForm extends React.Component {
   // The searchText state will get updated on the onSearchChange, when users type input
@@ -13,6 +14,7 @@ class SearchForm extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
 
+    this.props.history.push(`/search/${this.query.value}`);
     // This way I can pass the searchText to the onSearch function callback and to access it, we will pass onSearch the argumnet this.query.value
     this.props.onSearch(this.query.value);
 
@@ -40,4 +42,4 @@ class SearchForm extends React.Component {
   }
 }
 
-export default SearchForm;
+export default withRouter(SearchForm);
